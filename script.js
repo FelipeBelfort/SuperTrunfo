@@ -91,3 +91,122 @@ class Card {
 
     
 }
+
+
+
+class Match {
+   
+    static round = 0
+    static divResult = document.getElementById("resultado")
+    static btnCartas = document.getElementById("btnSortear")
+    static btnJogar = document.getElementById("btnJogar")
+    static tituloResultado = document.getElementById("subtitulo")
+    
+    
+    launchRound(deckPlayer, deckNpc) {
+        
+        Match.divResult.innerHTML = ""
+        this.deckMatch = [
+            deckPlayer.shift(), 
+            deckNpc.shift()
+            ]
+       
+        showCard(this.deckMatch[0])
+        this.tiedTimes = 1
+
+    
+        Match.btnCartas.setAttribute("disabled", "")
+        Match.btnJogar.removeAttribute("disabled")
+        Match.btnCartas.innerHTML = "Nova rodada"
+        if (Match.round % 2){
+            Match.tituloResultado.innerHTML = "O adversário já escolheu o atributo"
+        } else {
+            Match.tituloResultado.innerHTML = "Escolha o seu atributo"
+        }
+    }
+
+    chooseAttr() {
+        var orderedAttr = this.deckMatch[1].orderedAttr()
+        var attrChosen;
+        orderedAttr.forEach(attr => {
+            if (this.deckMatch[1].attrValue(attr) != this.deckMatch[0].attrValue(attr)) {
+                //marcar atributo (como?)
+                attrChosen = attr;
+            }
+            
+        });
+        return attrChosen
+    }
+
+    pickAttr() {
+        var radioAtributos = document.getElementsByName("atributo");
+      
+        for (var i = 0; i < radioAtributos.length; i++) {
+          if (radioAtributos[i].checked == true) {
+          return radioAtributos[i].value;
+          }
+        }
+      }
+
+    verifyResult() {
+        var resultMessage = ""
+        var selectedAttr;
+        
+        if (!(Match.round % 2)) {
+            selectedAttr = this.pickAttr()
+        } else {
+            selectedAttr = this.chooseAttr()
+        }
+        if (this.deckMatch[0].attrValue(selectedAttr) > this.deckMatch[1].attrValue(selectedAttr)) {
+            resultMessage = "Venceu"
+            this.roundResult = "win"
+        }
+        if (this.deckMatch[0].attrValue(selectedAttr) < this.deckMatch[1].attrValue(selectedAttr)) {
+            resultMessage = "perdeu"
+            this.roundResult = "lose"
+        }
+        if (this.deckMatch[0].attrValue(selectedAttr) == this.deckMatch[1].attrValue(selectedAttr)) {
+            if (this.tiedTimes > 1){
+            resultMessage = `empatou ${this.tiedTimes} vezes`
+            } else {
+            resultMessage = "empatou"
+            }
+            this.roundResult = "tied"
+            this.tiedTimes++
+        }
+        
+        return resultMessage
+    }
+
+    endOfRound() {
+        
+        if (this.roundResult == "win") {
+            this.deckMatch.forEach(card => { 
+                card.setOwner(1);
+                deckPlayer.push(card)
+            })
+        }
+        if (this.roundResult == "lose") {
+            this.deckMatch.forEach(card => {
+                card.setOwner(0);
+                deckNpc.push(card)
+            })
+        }
+        
+        if (!deckPlayer.length || !deckNpc.length) {
+            endOfGame(this.roundResult)
+            
+        }
+        Match.tituloResultado.innerHTML = "Clique para a próxima rodada"
+        Match.btnJogar.setAttribute("disabled", "")
+        Match.btnCartas.removeAttribute("disabled")
+        this.deckMatch = []
+        this.roundResult = ""
+        Match.round++
+    }
+
+    endOfGame(rndResult) {
+        // resetar a porra toda, dizer a mensagem e ajeitar botoes
+
+    }
+}
