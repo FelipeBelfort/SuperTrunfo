@@ -291,3 +291,187 @@ function jogar() {
         match.endOfRound()
     } 
 }
+
+var deck = [
+    new Card( "Satoru Gojo",
+    "https://i.pinimg.com/736x/64/af/38/64af38b1fa5a26c5002fbb0776ebde12.jpg",
+    1,
+    10,
+    9,
+    8,
+    6
+    )
+, new Card("Yuji Itadori",
+    "https://otakuorbit.com/wp-content/uploads/2021/03/Screenshot-2021-03-26-231928.png",
+    7,
+    9,
+    4,
+    5,
+    7
+    )
+
+, new Card( "Megumi Fushiguro",
+    "https://i.pinimg.com/originals/48/67/de/4867de4f592290f49ad0e860438d058c.jpg",
+    2,
+    8,
+    5,
+    9,
+    9
+    )
+
+, new Card( "Nobara Kugisaki",
+    "https://m.media-amazon.com/images/I/71DAVK+E8RL._AC_SX425_.jpg",
+    3,
+    8,
+    5,
+    9,
+    9
+    )
+
+, new Card( "Maki Zenin",
+    "https://shogi-pineapple.com/wp-content/uploads/2022/01/Cosplayer-amazes-us-with-his-version-of-Maki-Zenin-from.jpg",
+    4,
+    8,
+    5,
+    9,
+    9
+    )
+
+, new Card( "Toge Inumaki",
+    "https://i.pinimg.com/originals/c8/d3/10/c8d3107519d03670afcd49874c48a86e.jpg",
+    5,
+    8,
+    5,
+    9,
+    9
+    )
+
+, new Card( "Panda",
+    "https://laverdadnoticias.com/__export/1612131943315/sites/laverdad/img/2021/01/31/oanda_modo_gorila_jujutsu_kaisen.jpg_1743420889.jpg",
+    6,
+    8,
+    5,
+    9,
+    9
+    )
+
+, new Card( "Aoi Todo",
+    "https://i.pinimg.com/originals/47/20/c5/4720c5e828b3250a66a39ea59f79cbd4.jpg",
+    7,
+    8,
+    5,
+    9,
+    9
+    )
+
+, new Card( "Kento Nanami",
+    "https://danbooru.donmai.us/data/__nanami_kento_jujutsu_kaisen_drawn_by_ichimatsuinfo__c83fd2e1d9525a1cb1032d0eaf7ab838.jpg",
+    8,
+    8,
+    5,
+    9,
+    9
+    )
+
+, new Card( "Mahito",
+    "https://otakukart.com/wp-content/uploads/2022/02/Mahitos-1.jpg",
+    9,
+    8,
+    5,
+    9,
+    9
+    )
+
+, new Card( "Jogo",
+    "https://quotetheanime.com/wp-content/uploads/2021/09/j2-768x432.jpg",
+    10,
+    10,
+    9,
+    8,
+    6
+    )
+, new Card( "Hanami",
+    "https://jutsume.com/images/2021/05/13/best-matchup-for-hanami-jujutsu-kaisen-deathbattlematchups.jpg",
+    11,
+    8,
+    5,
+    9,
+    9
+    )
+
+, new Card( "Eso",
+    "https://otakukart.com/wp-content/uploads/2021/05/eso-Jujutsu-Kaisen.jpg",
+    12,
+    8,
+    5,
+    9,
+    9
+    )
+
+, new Card( "Kechizu",
+    "https://nerdhits.com.br/wp-content/uploads/2021/05/Kechizu-jujutsu.jpg",
+    13,
+    8,
+    5,
+    9,
+    9
+    )
+
+, new Card( "Finger Bearers",
+    "https://i.stack.imgur.com/IEJVB.jpg",
+    14,
+    8,
+    5,
+    9,
+    9
+    )
+
+, new Card( "Mai Zenin",
+    "https://i.pinimg.com/originals/e9/9a/7a/e99a7a253f231d82842084a3ffae27de.jpg",
+    15,
+    8,
+    5,
+    9,
+    9
+    )
+
+, new Card( "Kokichi Muta",
+    "https://vainkeurz.com/wp-content/uploads/2021/06/kokichi-muta.jpg",
+    16,
+    8,
+    5,
+    9,
+    9
+    )
+
+, new Card( "Kasumi Miwa",
+    "https://safebooru.org//images/3277/3fc9a85a9eab875e5e94fd9dddf3fe397ddeab56.jpg",
+    17,
+    8,
+    5,
+    9,
+    9
+    )
+
+, new Card( "Noritoshi Kamo",
+    "https://i.pinimg.com/736x/10/4d/12/104d12e851ff67799c3cf99abe58e5ad.jpg",
+    18,
+    8,
+    5,
+    9,
+    9
+    )
+
+, new Card( "Momo Nishimiya",
+    "https://i.pinimg.com/originals/71/22/a3/7122a30f93730a09919f70f073a675ac.jpg",
+    19,
+    8,
+    5,
+    9,
+    9
+    )
+]
+var deckPlayer = []
+var deckNpc = []
+var match = new Match()
+
