@@ -1,9 +1,9 @@
 class Card {
     
-    static attrName01 = "Força"
-    static attrName02 = "Energia"
-    static attrName03 = "Inteligência"
-    static attrName04 = "amizade"
+    static attrName01 = "Força Física"
+    static attrName02 = "Energia Amaldiçoada"
+    static attrName03 = "Habilidade"
+    static attrName04 = "Velocidade"
     
     constructor(name, img, attr1, attr2, attr3, attr4){
     this.name = name
@@ -113,14 +113,15 @@ class Match {
         this.tiedTimes = 1
 
     
-        Match.btnCartas.setAttribute("disabled", "")
-        Match.btnJogar.removeAttribute("disabled")
         Match.btnCartas.innerHTML = "Nova rodada"
         if (Match.round % 2){
             Match.tituloResultado.innerHTML = "O adversário já escolheu o atributo"
+            setTimeout(jogar, 2000)
         } else {
             Match.tituloResultado.innerHTML = "Escolha o seu atributo"
         }
+        Match.btnCartas.setAttribute("disabled", "")
+        Match.btnJogar.removeAttribute("disabled")
     }
 
     chooseAttr() {
@@ -147,7 +148,8 @@ class Match {
       }
 
     verifyResult() {
-        var resultMessage = ""
+        var resultMessage = "<p class='resultado-final'>";
+        
         var selectedAttr;
         
         if (!(Match.round % 2)) {
@@ -156,24 +158,24 @@ class Match {
             selectedAttr = this.chooseAttr()
         }
         if (this.deckMatch[0].attrValue(selectedAttr) > this.deckMatch[1].attrValue(selectedAttr)) {
-            resultMessage = "Venceu"
+            resultMessage += "Você venceu!"
             this.roundResult = "win"
         }
         if (this.deckMatch[0].attrValue(selectedAttr) < this.deckMatch[1].attrValue(selectedAttr)) {
-            resultMessage = "perdeu"
+            resultMessage += "Você perdeu."
             this.roundResult = "lose"
         }
         if (this.deckMatch[0].attrValue(selectedAttr) == this.deckMatch[1].attrValue(selectedAttr)) {
             if (this.tiedTimes > 1){
-            resultMessage = `empatou ${this.tiedTimes} vezes`
+            resultMessage += `empatou ${this.tiedTimes} vezes`
             } else {
-            resultMessage = "empatou"
+            resultMessage += "Empatou!<br>Escolha outro atributo."
             }
             this.roundResult = "tied"
             this.tiedTimes++
         }
-        
-        return resultMessage
+        resultMessage += "</p>"
+        return resultMessage 
     }
 
     endOfRound() {
@@ -192,7 +194,7 @@ class Match {
         }
         
         if (!deckPlayer.length || !deckNpc.length) {
-            endOfGame(this.roundResult)
+            endOfGame()
             
         }
         Match.tituloResultado.innerHTML = "Clique para a próxima rodada"
@@ -203,9 +205,27 @@ class Match {
         Match.round++
     }
 
-    endOfGame(rndResult) {
-        // resetar a porra toda, dizer a mensagem e ajeitar botoes
+    endOfGame() {
+        let finalMessage;
+        if (this.roundResult == "win") {
+            finalMessage = "Você venceu o jogo!"
+            while (deckPlayer.length > 0) {
+                deck.push(deckPlayer.shift)
+            }
+        } else {
+            finalMessage = "Você não tem mais cartas, boa sorte na próxima..."
+            while (deckNpc.length > 0) {
+                deck.push(deckNpc.shift)
+            }
+        }
 
+        Match.tituloResultado.innerHTML = finalMessage
+        Match.btnJogar.setAttribute("disabled", "")
+        Match.btnCartas.removeAttribute("disabled")
+        this.roundResult = ""
+        Match.round = 0
+        Match.btnCartas.innerHTML = "Nova partida"
+        
     }
 }
 
@@ -266,12 +286,14 @@ function showCard(card) {
         }
     } else {
         for (let index = 0; index < 4; index++) {
-            opcoesTexto += "<p>" + card.getAllAttr()[index][0] + ": " + card.getAllAttr()[index][1] + "</p>"            
+            opcoesTexto += "<p class='selected-attr'>" + card.getAllAttr()[index][0] + ": " + card.getAllAttr()[index][1] + "</p>"            
         }
     }
      
     divCard.innerHTML = moldura + nome + tagHTML + opcoesTexto + "</div>"
-        
+    if (!card.getOwner) {
+        //showSelectedAttr()
+    }   
 
 }
 
@@ -295,180 +317,160 @@ function jogar() {
 var deck = [
     new Card( "Satoru Gojo",
     "https://i.pinimg.com/736x/64/af/38/64af38b1fa5a26c5002fbb0776ebde12.jpg",
-    1,
+    6,
     10,
     9,
-    8,
-    6
+    9
     )
 , new Card("Yuji Itadori",
     "https://otakuorbit.com/wp-content/uploads/2021/03/Screenshot-2021-03-26-231928.png",
-    7,
     9,
-    4,
-    5,
-    7
+    9,
+    7,
+    8
     )
 
 , new Card( "Megumi Fushiguro",
     "https://i.pinimg.com/originals/48/67/de/4867de4f592290f49ad0e860438d058c.jpg",
-    2,
+    7,
     8,
-    5,
     9,
-    9
+    6
     )
 
 , new Card( "Nobara Kugisaki",
     "https://m.media-amazon.com/images/I/71DAVK+E8RL._AC_SX425_.jpg",
-    3,
+    6,
     8,
-    5,
     9,
-    9
+    5
     )
 
 , new Card( "Maki Zenin",
     "https://shogi-pineapple.com/wp-content/uploads/2022/01/Cosplayer-amazes-us-with-his-version-of-Maki-Zenin-from.jpg",
+    6,
     4,
-    8,
-    5,
     9,
-    9
+    8
     )
 
 , new Card( "Toge Inumaki",
     "https://i.pinimg.com/originals/c8/d3/10/c8d3107519d03670afcd49874c48a86e.jpg",
     5,
     8,
-    5,
-    9,
-    9
+    6,
+    5
     )
 
 , new Card( "Panda",
     "https://laverdadnoticias.com/__export/1612131943315/sites/laverdad/img/2021/01/31/oanda_modo_gorila_jujutsu_kaisen.jpg_1743420889.jpg",
-    6,
-    8,
-    5,
     9,
-    9
+    5,
+    7,
+    4
     )
 
 , new Card( "Aoi Todo",
     "https://i.pinimg.com/originals/47/20/c5/4720c5e828b3250a66a39ea59f79cbd4.jpg",
-    7,
+    10,
+    6,
     8,
-    5,
-    9,
     9
     )
 
 , new Card( "Kento Nanami",
     "https://danbooru.donmai.us/data/__nanami_kento_jujutsu_kaisen_drawn_by_ichimatsuinfo__c83fd2e1d9525a1cb1032d0eaf7ab838.jpg",
-    8,
-    8,
     5,
-    9,
-    9
+    6,
+    8,
+    8
     )
 
 , new Card( "Mahito",
     "https://otakukart.com/wp-content/uploads/2022/02/Mahitos-1.jpg",
-    9,
+    4,
     8,
-    5,
     9,
-    9
+    6
     )
 
 , new Card( "Jogo",
     "https://quotetheanime.com/wp-content/uploads/2021/09/j2-768x432.jpg",
-    10,
-    10,
-    9,
+    7,
     8,
-    6
+    8,
+    7
     )
 , new Card( "Hanami",
     "https://jutsume.com/images/2021/05/13/best-matchup-for-hanami-jujutsu-kaisen-deathbattlematchups.jpg",
-    11,
-    8,
-    5,
     9,
+    4,
+    6,
     9
     )
 
 , new Card( "Eso",
     "https://otakukart.com/wp-content/uploads/2021/05/eso-Jujutsu-Kaisen.jpg",
-    12,
+    8,
     8,
     5,
-    9,
-    9
+    6
     )
 
 , new Card( "Kechizu",
     "https://nerdhits.com.br/wp-content/uploads/2021/05/Kechizu-jujutsu.jpg",
-    13,
+    5,
     8,
     5,
-    9,
-    9
+    4
     )
 
 , new Card( "Finger Bearers",
     "https://i.stack.imgur.com/IEJVB.jpg",
-    14,
+    9,
     8,
     5,
-    9,
     9
     )
 
 , new Card( "Mai Zenin",
     "https://i.pinimg.com/originals/e9/9a/7a/e99a7a253f231d82842084a3ffae27de.jpg",
-    15,
+    4,
+    7,
     8,
-    5,
-    9,
     9
     )
 
 , new Card( "Kokichi Muta",
     "https://vainkeurz.com/wp-content/uploads/2021/06/kokichi-muta.jpg",
-    16,
+    4,
     8,
-    5,
-    9,
-    9
+    7,
+    4
     )
 
 , new Card( "Kasumi Miwa",
     "https://safebooru.org//images/3277/3fc9a85a9eab875e5e94fd9dddf3fe397ddeab56.jpg",
-    17,
-    8,
+    3,
+    7,
     5,
-    9,
     9
     )
 
 , new Card( "Noritoshi Kamo",
     "https://i.pinimg.com/736x/10/4d/12/104d12e851ff67799c3cf99abe58e5ad.jpg",
-    18,
+    7,
     8,
     5,
-    9,
     9
     )
 
 , new Card( "Momo Nishimiya",
     "https://i.pinimg.com/originals/71/22/a3/7122a30f93730a09919f70f073a675ac.jpg",
-    19,
+    4,
     8,
     5,
-    9,
-    9
+    8
     )
 ]
 var deckPlayer = []
