@@ -92,8 +92,6 @@ class Card {
     
 }
 
-
-
 class Match {
    
     static round = 0
@@ -209,4 +207,87 @@ class Match {
         // resetar a porra toda, dizer a mensagem e ajeitar botoes
 
     }
+}
+
+function dealCards(deckWhole, deckPlayer, deckNpc) {
+    
+    deckWhole.sort(() => Math.random() - 0.5);
+    while (deckWhole.length > 0){
+        deckPlayer.push(deckWhole.shift())
+        deckNpc.push(deckWhole.shift())
+    }
+    deckNpc.forEach(card => { card.setOwner(0)
+    });
+    
+}
+
+function showCard(card) {
+    var totCards = (deckPlayer.length + deckNpc.length + match.deckMatch.length)
+    var roundNumber = parseInt(Match.round)
+    var moldura = '<img src="https://www.alura.com.br/assets/img/imersoes/dev-2021/card-super-trunfo-transparent.png" style="width: inherit; height: inherit; position: absolute;">'
+    var opcoesTexto = ""
+    var tagHTML = "<div id= 'opcoes' class= 'carta-status'>"
+    var divCardNpc = document.getElementById("carta-maquina")
+    var divCardPlayer = document.getElementById("carta-jogador")
+    var divCard;
+    var deckTemp;
+    if (card.getOwner) {
+        divCard = divCardPlayer
+        deckTemp = deckPlayer
+        var opcoesTexto2 = ""
+        var incognita = "??"
+        var nome2 = `<p class= "carta-subtitle">
+                    <span>${incognita.repeat(6)}</span>
+                    <span>${deckNpc.length + 1}/${totCards}</span>
+                    </p>`
+        divCardNpc.style.backgroundImage = `url(https://pbs.twimg.com/media/E_mYQfUVUAkUXiv.jpg)`
+        
+        for (let index = 0; index < 4; index++) {
+            opcoesTexto2 += "<p>" + card.getAllAttr()[index][0] + ": " + incognita + "</p>"            
+        }
+       
+        divCardNpc.innerHTML = moldura + nome2 + tagHTML + opcoesTexto2 + "</div>"
+
+    } else {
+        divCard = divCardNpc
+        deckTemp = deckNpc
+    }
+
+    var nome = `<p class= "carta-subtitle">
+                <span>${card.getName}</span>
+                <span>${deckTemp.length + 1}/${totCards}</span>
+                </p>`
+    
+    divCard.style.backgroundImage = `url(${card.getImg})`
+
+    if (card.getOwner && !(roundNumber % 2)) {
+        for (let index = 0; index < 4; index++) {
+            opcoesTexto += "<input type='radio' name='atributo' checked value='" + card.getAllAttr()[index][0] + "'>" + card.getAllAttr()[index][0] + ": " + card.getAllAttr()[index][1] + "<br>"            
+        }
+    } else {
+        for (let index = 0; index < 4; index++) {
+            opcoesTexto += "<p>" + card.getAllAttr()[index][0] + ": " + card.getAllAttr()[index][1] + "</p>"            
+        }
+    }
+     
+    divCard.innerHTML = moldura + nome + tagHTML + opcoesTexto + "</div>"
+        
+
+}
+
+function sortearCartas() {
+    if (!Match.round) {
+    dealCards(deck, deckPlayer, deckNpc)
+    }
+    match.launchRound(deckPlayer, deckNpc)
+   
+}
+
+function jogar() {
+    var resultMessage = match.verifyResult()
+    Match.divResult.innerHTML = resultMessage
+    if (match.roundResult != "tied") {
+        showCard(match.deckMatch[1])
+        match.endOfRound()
+    } 
 }
