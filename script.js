@@ -127,13 +127,13 @@ class Match {
     chooseAttr() {
         var orderedAttr = this.deckMatch[1].orderedAttr()
         var attrChosen;
-        orderedAttr.forEach(attr => {
-            if (this.deckMatch[1].attrValue(attr) != this.deckMatch[0].attrValue(attr)) {
-                //marcar atributo (como?)
-                attrChosen = attr;
+        let i = 0
+        while (!attrChosen) {
+            if (this.deckMatch[1].attrValue(orderedAttr[i]) != this.deckMatch[0].attrValue(orderedAttr[i])) {
+                attrChosen = orderedAttr[i]
             }
-            
-        });
+            i++
+        }
         return attrChosen
     }
 
@@ -148,38 +148,37 @@ class Match {
       }
 
     verifyResult() {
-        var resultMessage = "<p class='resultado-final'>";
-        
-        var selectedAttr;
-        
+        var resultMessage = "<h2 class='resultado-final'>";
+              
         if (!(Match.round % 2)) {
-            selectedAttr = this.pickAttr()
+            this.selectedAttr = this.pickAttr()
         } else {
-            selectedAttr = this.chooseAttr()
+            this.selectedAttr = this.chooseAttr()
         }
-        if (this.deckMatch[0].attrValue(selectedAttr) > this.deckMatch[1].attrValue(selectedAttr)) {
-            resultMessage += "Você venceu!"
+        if (this.deckMatch[0].attrValue(this.selectedAttr) > this.deckMatch[1].attrValue(this.selectedAttr)) {
+            resultMessage += "Vitória!</h2><p>Você venceu!</p>"
             this.roundResult = "win"
         }
-        if (this.deckMatch[0].attrValue(selectedAttr) < this.deckMatch[1].attrValue(selectedAttr)) {
-            resultMessage += "Você perdeu."
+        if (this.deckMatch[0].attrValue(this.selectedAttr) < this.deckMatch[1].attrValue(this.selectedAttr)) {
+            resultMessage += "Você perdeu.</h2><p>Boa sorte na próxima rodada.</p>"
             this.roundResult = "lose"
         }
-        if (this.deckMatch[0].attrValue(selectedAttr) == this.deckMatch[1].attrValue(selectedAttr)) {
+        if (this.deckMatch[0].attrValue(this.selectedAttr) == this.deckMatch[1].attrValue(this.selectedAttr)) {
             if (this.tiedTimes > 1){
-            resultMessage += `empatou ${this.tiedTimes} vezes`
+            resultMessage += `Empatou ${this.tiedTimes} vezes.</h2><p>Escolha novamente.</p>`
             } else {
-            resultMessage += "Empatou!<br>Escolha outro atributo."
+            resultMessage += "Empatou!</h2><p>Escolha outro atributo.</p>"
             }
             this.roundResult = "tied"
             this.tiedTimes++
         }
-        resultMessage += "</p>"
+        
         return resultMessage 
     }
 
     endOfRound() {
         
+        showCard(this.deckMatch[1])
         if (this.roundResult == "win") {
             this.deckMatch.forEach(card => { 
                 card.setOwner(1);
@@ -192,7 +191,8 @@ class Match {
                 deckNpc.push(card)
             })
         }
-        
+        this.deckMatch = []
+        this.showSelectedAttr()
         if (!deckPlayer.length || !deckNpc.length) {
             endOfGame()
             
@@ -200,13 +200,27 @@ class Match {
         Match.tituloResultado.innerHTML = "Clique para a próxima rodada"
         Match.btnJogar.setAttribute("disabled", "")
         Match.btnCartas.removeAttribute("disabled")
-        this.deckMatch = []
         this.roundResult = ""
         Match.round++
+    }
+    
+    showSelectedAttr() {
+        const cardAttrs = document.querySelectorAll('#opcoes > p');
+        
+        
+        for (let i = 0; i < cardAttrs.length; i++) {
+            
+            if (cardAttrs[i].innerText.search(this.selectedAttr) >= 0) {
+                cardAttrs[i].className = "selected-attr";
+                }
+                
+            }
+    
     }
 
     endOfGame() {
         let finalMessage;
+
         if (this.roundResult == "win") {
             finalMessage = "Você venceu o jogo!"
             while (deckPlayer.length > 0) {
@@ -258,6 +272,7 @@ function showCard(card) {
         var incognita = "??"
         var nome2 = `<p class= "carta-subtitle">
                     <span>${incognita.repeat(6)}</span>
+                    <span>${"_".repeat(13)}</span>
                     <span>${deckNpc.length + 1}/${totCards}</span>
                     </p>`
         divCardNpc.style.backgroundImage = `url(https://pbs.twimg.com/media/E_mYQfUVUAkUXiv.jpg)`
@@ -275,6 +290,7 @@ function showCard(card) {
 
     var nome = `<p class= "carta-subtitle">
                 <span>${card.getName}</span>
+                <span>${"_".repeat(25 - card.getName.length)}</span>
                 <span>${deckTemp.length + 1}/${totCards}</span>
                 </p>`
     
@@ -282,20 +298,18 @@ function showCard(card) {
 
     if (card.getOwner && !(roundNumber % 2)) {
         for (let index = 0; index < 4; index++) {
-            opcoesTexto += "<input type='radio' name='atributo' checked value='" + card.getAllAttr()[index][0] + "'>" + card.getAllAttr()[index][0] + ": " + card.getAllAttr()[index][1] + "<br>"            
+            opcoesTexto += "<p><input type='radio' name='atributo' checked value='" + card.getAllAttr()[index][0] + "'>" + card.getAllAttr()[index][0] + ": " + card.getAllAttr()[index][1] + "</p>"            
         }
     } else {
         for (let index = 0; index < 4; index++) {
-            opcoesTexto += "<p class='selected-attr'>" + card.getAllAttr()[index][0] + ": " + card.getAllAttr()[index][1] + "</p>"            
+            opcoesTexto += "<p>" + card.getAllAttr()[index][0] + ": " + card.getAllAttr()[index][1] + "</p>"            
         }
     }
      
     divCard.innerHTML = moldura + nome + tagHTML + opcoesTexto + "</div>"
-    if (!card.getOwner) {
-        //showSelectedAttr()
-    }   
+    
 
-}
+}   
 
 function sortearCartas() {
     if (!Match.round) {
@@ -309,7 +323,6 @@ function jogar() {
     var resultMessage = match.verifyResult()
     Match.divResult.innerHTML = resultMessage
     if (match.roundResult != "tied") {
-        showCard(match.deckMatch[1])
         match.endOfRound()
     } 
 }
